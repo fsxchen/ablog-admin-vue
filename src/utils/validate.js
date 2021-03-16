@@ -1,3 +1,10 @@
+/*
+ * @Author: yangxingchen
+ * @Date: 2020-12-14 16:34:52
+ * @LastEditors: yangxingchen
+ * @LastEditTime: 2021-02-04 15:34:58
+ * @Description:
+ */
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -15,7 +22,7 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
+  const valid_map = ['admin', 'editor', 'arron']
   return valid_map.indexOf(str.trim()) >= 0
 }
 

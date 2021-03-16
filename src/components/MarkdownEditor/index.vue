@@ -1,117 +1,46 @@
+<!--
+ * @Author: yangxingchen
+ * @Date: 2020-12-14 16:34:52
+ * @LastEditors: yangxingchen
+ * @LastEditTime: 2021-02-05 10:54:36
+ * @Description:
+-->
 <template>
-  <div :id="id" />
+  <div id="main">
+    <mavon-editor v-model="md" @change="contentChange" />
+  </div>
 </template>
 
 <script>
-// deps for editor
-import 'codemirror/lib/codemirror.css' // codemirror
-import 'tui-editor/dist/tui-editor.css' // editor ui
-import 'tui-editor/dist/tui-editor-contents.css' // editor content
-
-import Editor from 'tui-editor'
-import defaultOptions from './default-options'
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 export default {
   name: 'MarkdownEditor',
+  components: {
+    'mavon-editor': mavonEditor.mavonEditor
+  },
   props: {
     value: {
       type: String,
       default: ''
-    },
-    id: {
-      type: String,
-      required: false,
-      default() {
-        return 'markdown-editor-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
-      }
-    },
-    options: {
-      type: Object,
-      default() {
-        return defaultOptions
-      }
-    },
-    mode: {
-      type: String,
-      default: 'markdown'
-    },
-    height: {
-      type: String,
-      required: false,
-      default: '300px'
-    },
-    language: {
-      type: String,
-      required: false,
-      default: 'en_US' // https://github.com/nhnent/tui.editor/tree/master/src/js/langs
     }
   },
   data() {
     return {
-      editor: null
+      md: this.value
     }
   },
-  computed: {
-    editorOptions() {
-      const options = Object.assign({}, defaultOptions, this.options)
-      options.initialEditType = this.mode
-      options.height = this.height
-      options.language = this.language
-      return options
-    }
-  },
+  computed: {},
   watch: {
-    value(newValue, preValue) {
-      if (newValue !== preValue && newValue !== this.editor.getValue()) {
-        this.editor.setValue(newValue)
-      }
-    },
-    language(val) {
-      this.destroyEditor()
-      this.initEditor()
-    },
-    height(newValue) {
-      this.editor.height(newValue)
-    },
-    mode(newValue) {
-      this.editor.changeMode(newValue)
+    value: function(newVal, oldVal) {
+      this.md = newVal // newVal即是chartData
     }
-  },
-  mounted() {
-    this.initEditor()
-  },
-  destroyed() {
-    this.destroyEditor()
   },
   methods: {
-    initEditor() {
-      this.editor = new Editor({
-        el: document.getElementById(this.id),
-        ...this.editorOptions
-      })
-      if (this.value) {
-        this.editor.setValue(this.value)
-      }
-      this.editor.on('change', () => {
-        this.$emit('input', this.editor.getValue())
-      })
-    },
-    destroyEditor() {
-      if (!this.editor) return
-      this.editor.off('change')
-      this.editor.remove()
-    },
-    setValue(value) {
-      this.editor.setValue(value)
-    },
-    getValue() {
-      return this.editor.getValue()
-    },
-    setHtml(value) {
-      this.editor.setHtml(value)
-    },
-    getHtml() {
-      return this.editor.getHtml()
+    contentChange(md, html) {
+      this.$emit('input', md)
+      this.$emit('content_generate', html)
     }
   }
 }
